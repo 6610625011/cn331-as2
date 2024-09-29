@@ -1,7 +1,51 @@
 {% extends "base.html" %}
 {% block title %}
-  <title>Courses</title>
+<title>Courses</title>
 {% endblock %}
 {% block content %}
-    <p class="justify-content-center">Quota list</p>
+{% comment %} <p class="justify-content-center">Quota list</p> {% endcomment %}
+
+<h3>รายวิชาทั้งหมด</h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">NO.</th>
+      <th scope="col">รหัสวิชา</th>
+      <th scope="col">ชื่อวิชา</th>
+      <th scope="col">ภาคการศึกษา</th>
+      <th scope="col">จำนวนรับ</th>
+      <th scope="col">ขอโควต้า</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for course in all_courses%}
+    <tr>
+      <th scope="row">{{course.id}}</th>
+      <td>{{course.subject_id}}</td>
+      <td>{{course.subject_name}}</td>
+      <td>{{course.subject_semester}}</td>
+      <td>{{course.subject_amount}}</td>
+      <td><a href="#" class="btn btn-outline-dark">ขอโควต้า</a></td>
+    </tr>
+    {% endfor%}
+  </tbody>
+</table>
 {% endblock %}
+
+{% comment %} <tr>
+  <th scope="row">1</th>
+  <td>Mark</td>
+  <td>Otto</td>
+  <td>@mdo</td>
+</tr>
+<tr>
+  <th scope="row">2</th>
+  <td>Jacob</td>
+  <td>Thornton</td>
+  <td>@fat</td>
+</tr>
+<tr>
+  <th scope="row">3</th>
+  <td colspan="2">Larry the Bird</td>
+  <td>@twitter</td>
+</tr> {% endcomment %}

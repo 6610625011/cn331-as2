@@ -3,6 +3,7 @@ from myapp.models import Student
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login
+from .models import Course
 
 
 # Create your views here.
@@ -32,7 +33,20 @@ def index(request):
 
 
 def courses(request):
-    return render(request, "courses.html")
+    all_courses = Course.objects.all()
+    return render(request,"courses.html",{"all_courses":all_courses})
+    # course = Course.objects.get(subject_id="CN331")
+
+    # context = {
+    #     'subject_id': course.subject_id,
+    #     'subject_name': course.subject_name,
+    #     'subject_semester': course.subject_semester,
+    #     'subject_amount': course.subject_amount,
+    #     # 'subject_status': "Open" if course.is_quota_open else "Closed"  # Display open/closed status
+    # }
+
+    # return render(request, "courses.html", context)
+
 
 
 def logout(request):
