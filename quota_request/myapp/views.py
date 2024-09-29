@@ -1,9 +1,10 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from myapp.models import Student
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
-from .models import Course
+from .models import Course,QuotaRequest
 
 
 # Create your views here.
@@ -31,22 +32,22 @@ def index(request):
     # if request.method == "POST":
     return render(request, "index.html")
 
-
 def courses(request):
     all_courses = Course.objects.all()
-    return render(request,"courses.html",{"all_courses":all_courses})
-    # course = Course.objects.get(subject_id="CN331")
+    requested_courses = QuotaRequest.objects.filter(user=request.user)
 
-    # context = {
-    #     'subject_id': course.subject_id,
-    #     'subject_name': course.subject_name,
-    #     'subject_semester': course.subject_semester,
-    #     'subject_amount': course.subject_amount,
-    #     # 'subject_status': "Open" if course.is_quota_open else "Closed"  # Display open/closed status
-    # }
-
-    # return render(request, "courses.html", context)
-
+    return render(request, "courses.html", {
+        "all_courses": all_courses,
+        "requested_courses": requested_courses
+    })
+    
+def request_quota(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    
+    if not QuotaRequest.objects.filter(user=request.user, course=course).exists():
+        QuotaRequest.objects.create(user=request.user, course=course)
+    
+    return redirect('/courses')
 
 
 def logout(request):

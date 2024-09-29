@@ -4,6 +4,35 @@
 {% endblock %}
 {% block content %}
 {% comment %} <p class="justify-content-center">Quota list</p> {% endcomment %}
+<h2>รายวิชาที่จะขอโควต้า</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">NO.</th>
+      <th scope="col">รหัสวิชา</th>
+      <th scope="col">ชื่อวิชา</th>
+      <th scope="col">ภาคการศึกษา</th>
+      <th scope="col">จำนวนรับ</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for request in requested_courses %}
+    <tr>
+      <th scope="row">{{ forloop.counter }}</th>
+      <td>{{ request.course.subject_id }}</td>
+      <td>{{ request.course.subject_name }}</td>
+      <td>{{ request.course.subject_semester }}</td>
+      <td>{{ request.course.subject_amount }}</td>
+      <td><span class="btn btn-outline-danger">ลบ</span></td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="6" class="text-center">คุณยังไม่ได้ขอโควต้าในรายวิชาใด</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
 
 <h3>รายวิชาทั้งหมด</h3>
 <table class="table">
@@ -25,27 +54,9 @@
       <td>{{course.subject_name}}</td>
       <td>{{course.subject_semester}}</td>
       <td>{{course.subject_amount}}</td>
-      <td><a href="#" class="btn btn-outline-dark">ขอโควต้า</a></td>
+      <td><a href="{% url 'request_quota' course.id %}" class="btn btn-outline-dark">enroll</a></td>
     </tr>
     {% endfor%}
   </tbody>
 </table>
 {% endblock %}
-
-{% comment %} <tr>
-  <th scope="row">1</th>
-  <td>Mark</td>
-  <td>Otto</td>
-  <td>@mdo</td>
-</tr>
-<tr>
-  <th scope="row">2</th>
-  <td>Jacob</td>
-  <td>Thornton</td>
-  <td>@fat</td>
-</tr>
-<tr>
-  <th scope="row">3</th>
-  <td colspan="2">Larry the Bird</td>
-  <td>@twitter</td>
-</tr> {% endcomment %}
