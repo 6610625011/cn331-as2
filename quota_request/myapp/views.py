@@ -5,6 +5,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from .models import Course,QuotaRequest
+from django.contrib.auth import authenticate, login
+
 
 
 # Create your views here.
@@ -30,8 +32,24 @@ def index(request):
 
     #
     # if request.method == "POST":
+        return redirect('/courses')  # เปลี่ยน 'courses' เป็นชื่อ URL ของคุณ
+
     return render(request, "index.html")
 
+def login_view(request):
+    if request.method == "POST":
+        username = request.POST.get("username")  # Get username from form
+        password = request.POST.get("password")  # Get password from form
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('/courses')  # Redirect to courses page
+        else:
+            error_message = "Invalid username or password."
+            return render(request, "index.html", {"error": error_message})
+    return render(request, "index.html")
+
+@login_required(login_url='/users/login/')
 def courses(request):
     all_courses = Course.objects.all()
     requested_courses = QuotaRequest.objects.filter(user=request.user).select_related('course')
@@ -86,7 +104,7 @@ def cancel_quota_request(request, course_id):
     messages.success(request, "ยกเลิกการขอโควต้าแล้ว")
     return redirect('/mycourse')
 
-
+@login_required(login_url='/users/login/')
 def mycourse(request):
     requested_courses = QuotaRequest.objects.filter(user=request.user)
     context = {

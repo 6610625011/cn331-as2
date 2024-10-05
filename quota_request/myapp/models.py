@@ -10,7 +10,7 @@ class Student(models.Model):
 
     def __str__(self):
         # converse obj to str
-        return self.id + ", " + str(self.name)
+        return str(self.id) + ", " + str(self.name)
 
 class Course(models.Model):
     subject_id = models.CharField(max_length=10)
@@ -18,6 +18,7 @@ class Course(models.Model):
     subject_semester = models.CharField(max_length=10)
     subject_amount = models.IntegerField()
     subject_amount_remaining = models.IntegerField()
+    subject_credit = models.IntegerField()
     quota_enabled = models.BooleanField(default=True)
     
     def save(self, *args, **kwargs):

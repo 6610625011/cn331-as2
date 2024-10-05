@@ -4,6 +4,14 @@
 {% endblock %}
 {% block content %}
 
+<head>
+  <style>
+    tr[data-bs-toggle="collapse"] {
+      cursor: pointer;
+    }
+  </style>
+</head>
+
 {% if messages %}
 {% for message in messages %}
 <div class="alert alert-success" role="alert">
@@ -12,90 +20,92 @@
 {% endfor %}
 {% endif %}
 
-<!-- {% comment %} <p class="justify-content-center">Quota list</p> {% endcomment %} -->
 <div class="dropdown mb-3">
-  <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
+  <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
     aria-expanded="false">
     เลือกภาคการศึกษา
-  </a>
-</div>
-
-<div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
-    aria-expanded="false">
-    Dropdown button
   </button>
-  <div class="dropdown">
-    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-      <li><a class="dropdown-item" href="#">Action</a></li>
-      <li><a class="dropdown-item" href="#">Another action</a></li>
-      <li><a class="dropdown-item" href="#">Something else here</a></li>
-    </ul>
-  </div>
-
-  <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-    <li>
-      <a class="dropdown-item" href="?semester=">ทั้งหมด</a>
-    </li>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+    <li><a class="dropdown-item" href="?semester=">ทั้งหมด</a></li>
     {% for semester in semesters %}
-    <li>
-      <a class="dropdown-item" href="?semester={{ semester }}">
-        {{ semester }}
-      </a>
-    </li>
+    <li><a class="dropdown-item" href="?semester={{ semester }}">{{ semester }}</a></li>
     {% endfor %}
   </ul>
 </div>
 
-<ul class="dropdown-menu"></ul>
-<li>
-  <h6 class="dropdown-header">Dropdown header</h6>
-</li>
-<li><a class="dropdown-item" href="#">Action</a></li>
-<li><a class="dropdown-item" href="#">Another action</a></li>
-</ul>
-
 <h3>รายวิชาทั้งหมด</h3>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">NO.</th>
-      <th scope="col">รหัสวิชา</th>
-      <th scope="col">ชื่อวิชา</th>
-      <th scope="col">ภาคการศึกษา</th>
-      <th scope="col">จำนวนรับ</th>
-      <th scope="col">จำนวนที่นั่งที่เหลือ</th>
-      <th scope="col">ขอโควต้า</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for course in all_courses%}
-    <tr>
-      <th scope="row">{{ forloop.counter }}</th>
-      <td>{{course.subject_id}}</td>
-      <td>{{course.subject_name}}</td>
-      <td>{{course.subject_semester}}</td>
-      <td>{{course.subject_amount}}</td>
-      <td>{{ course.subject_amount_remaining }}</td>
-      <td>
-        {% if course.quota_enabled %}
-        {% if course.subject_amount_remaining == 0 %}
-        <span class="text-danger">เต็ม</span>
-        {% elif course.id in requested_course_ids %}
-        <span class="text-muted">ขอโควต้าแล้ว</span>
-        {% else %}
-        <div class="text-end" style="margin-right: 20px;">
-          <a href="{% url 'request_quota' course.id %}" class="btn btn-outline-dark"
-            onclick="return confirm('คุณต้องการขอโควต้าวิชา {{ course.subject_id }} {{ course.subject_name }} หรือไม่?')">enroll</a>
-        </div>
-        {% endif %}
-        {% else %}
-        <span class="text-danger">รายวิชานี้ไม่เปิดให้ขอโควต้า</span>
-        {% endif %}
-      </td>
-    </tr>
-    {% endfor%}
-  </tbody>
-</table>
+<div class="accordion" id="courseAccordion">
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">NO.</th>
+        <th scope="col">รหัสวิชา</th>
+        <th scope="col">ชื่อวิชา</th>
+        <th scope="col">ภาคการศึกษา</th>
+        <th scope="col">จำนวนรับ</th>
+        <th scope="col">จำนวนที่นั่งที่เหลือ</th>
+        <th scope="col">ขอโควต้า</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for course in all_courses %}
+      <tr data-bs-toggle="collapse" data-bs-target="#collapseCourse{{ course.id }}" aria-expanded="false"
+        aria-controls="collapseCourse{{ course.id }}">
+        <th scope="row">{{ forloop.counter }}</th>
+        <td>{{ course.subject_id }}</td>
+        <td>{{ course.subject_name }}</td>
+        <td>{{ course.subject_semester }}</td>
+        <td>{{ course.subject_amount }}</td>
+        <td>{{ course.subject_amount_remaining }}</td>
+        <td>
+          {% if course.quota_enabled %}
+          {% if course.subject_amount_remaining == 0 %}
+          <span class="text-danger">เต็ม</span>
+          {% elif course.id in requested_course_ids %}
+          <span class="text-muted">ขอโควต้าแล้ว</span>
+          {% else %}
+          <div class="text-end" style="margin-right: 20px;">
+            <a href="#" class="btn btn-outline-dark"
+              onclick="return handleEnrollClick(this, '{{ course.subject_id }}', '{{ course.subject_name }}', '{{ course.id }}')">Enroll</a>
+          </div>
+          {% endif %}
+          {% else %}
+          <span class="text-danger">รายวิชานี้ไม่เปิดให้ขอโควต้า</span>
+          {% endif %}
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="7">
+          <div id="collapseCourse{{ course.id }}" class="accordion-collapse collapse" data-bs-parent="#courseAccordion">
+            <div class="card card-body">
+              <p><strong>รหัสวิชา:</strong> {{ course.subject_id }}</p>
+              <p><strong>ชื่อวิชา:</strong> {{ course.subject_name }}</p>
+              <p><strong>หน่วยกิต:</strong> {{ course.subject_credit }}</p>
+              <p><strong>จำนวนรับ:</strong> {{ course.subject_amount }}</p>
+              <p><strong>จำนวนที่นั่งที่เหลือ:</strong> {{ course.subject_amount_remaining }}</p>
+              <p><strong>ภาคการศึกษา:</strong> {{ course.subject_semester }}</p>
+            </div>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<script>
+  function handleEnrollClick(button, subjectId, subjectName, courseId) {
+    // Show confirmation message
+    const confirmEnroll = confirm('คุณต้องการขอโควต้าวิชา ' + subjectId + ' ' + subjectName + ' หรือไม่?');
+    if (confirmEnroll) {
+      // Follow the link to request the quota
+      const url = "{% url 'request_quota' '0' %}".replace('0', courseId);
+      window.location.href = url;
+    }
+    return false; // Prevent the default action
+  }
+</script>
+
 {% endblock %}
