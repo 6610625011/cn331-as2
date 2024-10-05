@@ -10,7 +10,8 @@ class Student(models.Model):
 
     def __str__(self):
         # converse obj to str
-        return self.id + ", " + str(self.name)
+        return str(self.id) + ", " + str(self.name)
+
 
 class Course(models.Model):
     subject_id = models.CharField(max_length=10)
@@ -19,19 +20,20 @@ class Course(models.Model):
     subject_amount = models.IntegerField()
     subject_amount_remaining = models.IntegerField()
     quota_enabled = models.BooleanField(default=True)
-    
+
     def save(self, *args, **kwargs):
-        if self.pk is None: 
+        if self.pk is None:
             self.subject_amount_remaining = self.subject_amount
-        super().save(*args, **kwargs)    
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.subject_id
-    
+
+
 class QuotaRequest(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    requested_at = models.DateTimeField(auto_now_add=True)    
+    requested_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.user.username} - {self.course.subject_id}"
