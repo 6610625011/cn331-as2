@@ -23,15 +23,33 @@
 <div class="dropdown mb-3">
   <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
     aria-expanded="false">
+    {% if request.GET.semester %}
+    {{ request.GET.semester }}
+    {% else %}
     เลือกภาคการศึกษา
+    {% endif %}
   </button>
   <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-    <li><a class="dropdown-item" href="?semester=">ทั้งหมด</a></li>
+    <li>
+      <a class="dropdown-item" href="?semester=">ทั้งหมด</a>
+    </li>
     {% for semester in semesters %}
-    <li><a class="dropdown-item" href="?semester={{ semester }}">{{ semester }}</a></li>
+    <li>
+      <a class="dropdown-item" href="?semester={{ semester }}">{{ semester }}</a>
+    </li>
     {% endfor %}
   </ul>
 </div>
+
+
+<script>
+  function changeButtonText(text) {
+    document.getElementById('dropdownMenuButton1').innerText = text;
+  }
+</script>
+
+
+
 
 <h3>รายวิชาทั้งหมด</h3>
 
@@ -97,14 +115,12 @@
 
 <script>
   function handleEnrollClick(button, subjectId, subjectName, courseId) {
-    // Show confirmation message
     const confirmEnroll = confirm('คุณต้องการขอโควต้าวิชา ' + subjectId + ' ' + subjectName + ' หรือไม่?');
     if (confirmEnroll) {
-      // Follow the link to request the quota
       const url = "{% url 'request_quota' '0' %}".replace('0', courseId);
       window.location.href = url;
     }
-    return false; // Prevent the default action
+    return false;
   }
 </script>
 

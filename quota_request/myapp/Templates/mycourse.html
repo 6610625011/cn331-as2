@@ -20,7 +20,6 @@
       <th scope="col">รหัสวิชา</th>
       <th scope="col">ชื่อวิชา</th>
       <th scope="col">ภาคการศึกษา</th>
-      {% comment %} <th scope="col">จำนวนรับ</th> {% endcomment %}
       <th scope="col"></th>
     </tr>
   </thead>
@@ -31,7 +30,6 @@
       <td>{{ request.course.subject_id }}</td>
       <td>{{ request.course.subject_name }}</td>
       <td>{{ request.course.subject_semester }}</td>
-      {% comment %} <td>{{ request.course.subject_amount }}</td> {% endcomment %}
       <td><div class="text-end" style="margin-right: 20px;">
         <a href="{% url 'cancel_quota_request' request.course.id %}" class="btn btn-outline-danger"
           onclick="return confirm('คุณต้องยกเลิกการขอโควต้าวิชา {{ request.course.subject_id }} {{ request.course.subject_name }} หรือไม่?')">ลบ</a>

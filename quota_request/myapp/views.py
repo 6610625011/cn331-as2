@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect,get_object_or_404
-from myapp.models import Student
 from django.contrib import messages
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
@@ -11,43 +10,20 @@ from django.contrib.auth import authenticate, login
 
 # Create your views here.
 def index(request):
-    if request.method == "POST":
-        id = request.POST["id"]
-    #    form = AuthenticationForm(data=request.POST)
-    #    if form.is_valid():
-    #        user = form.get_user()
-    #        login(request, user)
-    #        return redirect("courses.html")
-    # else:
-    #    form = AuthenticationForm()
-    # return render(
-    #    request,
-    #    "index.html",
-    #    {
-    #        "form": form,
-    #    },
-    # )
-    # student_id = Student.objects.get(id)
-    # student_password = Student.objects.get(password)
-
-    #
-    # if request.method == "POST":
-        return redirect('/courses')  # เปลี่ยน 'courses' เป็นชื่อ URL ของคุณ
-
-    return render(request, "index.html")
+    return redirect('login')
 
 def login_view(request):
     if request.method == "POST":
-        username = request.POST.get("username")  # Get username from form
-        password = request.POST.get("password")  # Get password from form
+        username = request.POST.get("username") 
+        password = request.POST.get("password") 
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('/courses')  # Redirect to courses page
+            return redirect('/courses')  
         else:
             error_message = "Invalid username or password."
             return render(request, "index.html", {"error": error_message})
-    return render(request, "index.html")
+    return render(request, "courses.html")
 
 @login_required(login_url='/users/login/')
 def courses(request):
@@ -56,7 +32,7 @@ def courses(request):
     
     requested_course_ids = requested_courses.values_list('course_id', flat=True)
 
-    available_courses = Course.objects.exclude(id__in=requested_course_ids)  # Use the list of IDs here
+    available_courses = Course.objects.exclude(id__in=requested_course_ids) 
     
     selected_semester = request.GET.get('semester', None)
 

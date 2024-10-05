@@ -1,9 +1,6 @@
 from django.contrib import admin
 from django.contrib import messages
-from myapp.models import Student, Course, QuotaRequest
-
-class StudentAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name']
+from myapp.models import Course, QuotaRequest
 
 class CourseAdmin(admin.ModelAdmin):
     list_display = ['subject_id', 'subject_name', 'subject_semester', 'subject_amount', 'quota_enabled']
@@ -22,7 +19,17 @@ class CourseAdmin(admin.ModelAdmin):
 class QuotaRequestAdmin(admin.ModelAdmin):
     list_display = ['course', 'user', 'requested_at']
 
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+
+        course = obj.course
+        if course.subject_amount_remaining > 0:
+            course.subject_amount_remaining -= 1
+            course.save()
+            messages.success(request, f"โควต้าคงเหลือของวิชา {course.subject_name} ลดลงเหลือ {course.subject_amount_remaining}.")
+        else:
+            messages.error(request, f"โควต้าของวิชา {course.subject_name} เต็มแล้ว ไม่สามารถเพิ่มโควต้าได้.")
+
 # Register your models here.
-admin.site.register(Student, StudentAdmin)
 admin.site.register(Course, CourseAdmin)
 admin.site.register(QuotaRequest, QuotaRequestAdmin)
