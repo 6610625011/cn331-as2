@@ -21,8 +21,7 @@ class Course(models.Model):
     quota_enabled = models.BooleanField(default=True)
     
     def save(self, *args, **kwargs):
-        # ตั้งค่า subject_amount_remaining ให้มีค่าเท่ากับ subject_amount ก่อนบันทึก
-        if self.pk is None:  # ถ้าเป็นการสร้างใหม่
+        if self.pk is None: 
             self.subject_amount_remaining = self.subject_amount
         super().save(*args, **kwargs)    
 

@@ -36,7 +36,6 @@ def courses(request):
     all_courses = Course.objects.all()
     requested_courses = QuotaRequest.objects.filter(user=request.user).select_related('course')
     
-    # Extract the IDs of the requested courses
     requested_course_ids = requested_courses.values_list('course_id', flat=True)
 
     available_courses = Course.objects.exclude(id__in=requested_course_ids)  # Use the list of IDs here
@@ -50,7 +49,7 @@ def courses(request):
 
     return render(request, "courses.html", {
         "all_courses": all_courses,
-        "requested_course_ids": requested_course_ids,  # Pass the list of course IDs
+        "requested_course_ids": requested_course_ids, 
         "available_courses": available_courses,
         "semesters": semesters,
         "selected_semester": selected_semester,
@@ -61,10 +60,10 @@ def request_quota(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     
     if not QuotaRequest.objects.filter(user=request.user, course=course).exists():
-        if course.subject_amount_remaining > 0:  # เปลี่ยนเป็น subject_amount_remaining
+        if course.subject_amount_remaining > 0:
             QuotaRequest.objects.create(user=request.user, course=course)
 
-            course.subject_amount_remaining -= 1  # ลดจำนวนที่นั่งที่เหลือ
+            course.subject_amount_remaining -= 1
             course.save()
 
             messages.success(request, 'ขอโควต้าสำเร็จ')
@@ -81,7 +80,7 @@ def cancel_quota_request(request, course_id):
     
     quota_request.delete()
     
-    course.subject_amount_remaining += 1  # เพิ่มจำนวนที่นั่งที่เหลือ
+    course.subject_amount_remaining += 1
     course.save()    
     
     messages.success(request, "ยกเลิกการขอโควต้าแล้ว")
