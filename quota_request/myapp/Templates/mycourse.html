@@ -1,7 +1,53 @@
 {% extends "base.html" %}
 {% block title %}
-  <title>my courses</title>
+<title>Courses</title>
 {% endblock %}
 {% block content %}
- <p>hello {{user.name}}</p>
+
+{% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-success" role="alert">
+    <strong>{{ message }}</strong>
+  </div>
+  {% endfor %}
+{% endif %}
+
+<h2>รายวิชาที่ขอโควต้าสำเร็จ</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">NO.</th>
+      <th scope="col">รหัสวิชา</th>
+      <th scope="col">ชื่อวิชา</th>
+      <th scope="col">ภาคการศึกษา</th>
+      <th scope="col">จำนวนรับ</th>
+      <th scope="col"></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for request in requested_courses %}
+    <tr>
+      <th scope="row">{{ forloop.counter }}</th>
+      <td>{{ request.course.subject_id }}</td>
+      <td>{{ request.course.subject_name }}</td>
+      <td>{{ request.course.subject_semester }}</td>
+      <td>{{ request.course.subject_amount }}</td>
+      <td><div class="text-end" style="margin-right: 20px;">
+        <a href="{% url 'cancel_quota_request' request.course.id %}" class="btn btn-outline-danger"
+          onclick="return confirm('คุณต้องยกเลิกการขอโควต้าวิชา {{ request.course.subject_id }} {{ request.course.subject_name }} หรือไม่?')">ลบ</a>
+      </div></td>
+    </tr>
+    {% empty %}
+    <tr>
+      <td colspan="6" class="text-center">คุณยังไม่ได้ขอโควต้าในรายวิชาใด</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<div id="selectedCourses" style="display:none;">
+  {% for request in requested_courses %}
+  <div>{{ request.course.subject_id }}: {{ request.course.subject_name }}</div>
+  {% endfor %}
+</div>
+
 {% endblock %}

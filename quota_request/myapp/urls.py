@@ -7,5 +7,7 @@ urlpatterns = [
     path("", views.index),
     path("courses", views.courses),
     path('request_quota/<int:course_id>/', request_quota, name='request_quota'),    
-    path("logout", auth_views.LogoutView.as_view(), name="logout"),  # Use Django's built-in LogoutView
+    path('cancel_quota_request/<int:course_id>/', views.cancel_quota_request, name='cancel_quota_request'),
+    path("mycourse", views.mycourse),       
+    path("logout", auth_views.LogoutView.as_view(), name="logout"), 
 ]

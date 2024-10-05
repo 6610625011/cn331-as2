@@ -34,20 +34,60 @@ def index(request):
 
 def courses(request):
     all_courses = Course.objects.all()
-    requested_courses = QuotaRequest.objects.filter(user=request.user)
+    requested_courses = QuotaRequest.objects.filter(user=request.user).select_related('course')
+    
+    available_courses = Course.objects.exclude(id__in=requested_courses)
+    
+    selected_semester = request.GET.get('semester', None)
+
+    if selected_semester:
+        all_courses = all_courses.filter(subject_semester=selected_semester)
+
+    semesters = Course.objects.values_list('subject_semester', flat=True).distinct()
 
     return render(request, "courses.html", {
         "all_courses": all_courses,
-        "requested_courses": requested_courses
+        "requested_courses": requested_courses,
+        "available_courses": available_courses,
+        "semesters": semesters,
+        "selected_semester": selected_semester,
     })
     
 def request_quota(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     
     if not QuotaRequest.objects.filter(user=request.user, course=course).exists():
-        QuotaRequest.objects.create(user=request.user, course=course)
-    
+        if course.subject_amount > 0:
+            QuotaRequest.objects.create(user=request.user, course=course)
+
+            course.subject_amount -= 1
+            course.save()
+
+            messages.success(request, 'ขอโควต้าสำเร็จ')
+        else:
+            messages.error(request, 'ขอโควต้าไม่สำเร็จ: วิชานี้เต็มแล้ว')
+    else:
+        messages.error(request, 'คุณได้ขอโควต้าในวิชานี้แล้ว')
     return redirect('/courses')
+
+def cancel_quota_request(request, course_id):
+    course = get_object_or_404(Course, id=course_id)    
+    quota_request = get_object_or_404(QuotaRequest, user=request.user, course_id=course_id)
+    
+    quota_request.delete()
+    
+    course.subject_amount += 1
+    course.save()    
+    
+    messages.success(request, "ยกเลิกการขอโควต้าแล้ว")
+    return redirect('/mycourse')
+
+def mycourse(request):
+    requested_courses = QuotaRequest.objects.filter(user=request.user)
+    context = {
+        'requested_courses': requested_courses,
+    }
+    return render(request, 'mycourse.html', context)
 
 
 def logout(request):

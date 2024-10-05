@@ -3,38 +3,39 @@
 <title>Courses</title>
 {% endblock %}
 {% block content %}
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-success" role="alert">
+  <strong>{{ message }}</strong>
+</div>
+{% endfor %}
+{% endif %}
+
 {% comment %} <p class="justify-content-center">Quota list</p> {% endcomment %}
-<h2>รายวิชาที่จะขอโควต้า</h2>
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">NO.</th>
-      <th scope="col">รหัสวิชา</th>
-      <th scope="col">ชื่อวิชา</th>
-      <th scope="col">ภาคการศึกษา</th>
-      <th scope="col">จำนวนรับ</th>
-      <th scope="col"></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for request in requested_courses %}
-    <tr>
-      <th scope="row">{{ forloop.counter }}</th>
-      <td>{{ request.course.subject_id }}</td>
-      <td>{{ request.course.subject_name }}</td>
-      <td>{{ request.course.subject_semester }}</td>
-      <td>{{ request.course.subject_amount }}</td>
-      <td><span class="btn btn-outline-danger">ลบ</span></td>
-    </tr>
-    {% empty %}
-    <tr>
-      <td colspan="6" class="text-center">คุณยังไม่ได้ขอโควต้าในรายวิชาใด</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
 
 <h3>รายวิชาทั้งหมด</h3>
+
+<div class="dropdown mb-3"></div>
+<a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
+  aria-expanded="false">
+  เลือกภาคการศึกษา
+</a>
+
+<ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+  <li>
+    <a class="dropdown-item" href="?semester=">ทั้งหมด</a>
+  </li>
+  {% for semester in semesters %}
+  <li>
+    <a class="dropdown-item" href="?semester={{ semester }}">
+      {{ semester }}
+    </a>
+  </li>
+  {% endfor %}
+</ul>
+</div>
+
 <table class="table">
   <thead>
     <tr>
@@ -49,12 +50,21 @@
   <tbody>
     {% for course in all_courses%}
     <tr>
-      <th scope="row">{{course.id}}</th>
+      <th scope="row">{{ forloop.counter }}</th>
       <td>{{course.subject_id}}</td>
       <td>{{course.subject_name}}</td>
       <td>{{course.subject_semester}}</td>
       <td>{{course.subject_amount}}</td>
-      <td><a href="{% url 'request_quota' course.id %}" class="btn btn-outline-dark">enroll</a></td>
+      <td>
+        {% if course.subject_id in requested_courses %}
+        <span style="color: grey;">ขอโควต้าแล้ว</span>
+        {% else %}
+        <div class="text-end" style="margin-right: 20px;">
+          <a href="{% url 'request_quota' course.id %}" class="btn btn-outline-dark"
+            onclick="return confirm('คุณต้องการขอโควต้าวิชา {{ course.subject_id }} {{ course.subject_name }} หรือไม่?')">enroll</a>
+        </div>
+        {% endif %}
+      </td>
     </tr>
     {% endfor%}
   </tbody>
