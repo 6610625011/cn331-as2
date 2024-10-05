@@ -5,33 +5,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    <link href="https://fonts.googleapis.com/css2?family=Ekkamai+New:wght@400;700&display=swap" rel="stylesheet">
+
+  </body>
 
     <title>{% block title %}{% endblock %}</title>
 </head>
 
 <body>
-    <div class="container"></div>
+    <div class="container" style="font-family: 'Ekkamai New'"></div>
     <header class="d-flex justify-content-center py-3">
       <ul class="nav nav-pills">
-        <li class="nav-item btn btn-primary"><a href="/" class="nav-link active" aria-current="page">Home</a></li>
+
         <li class="nav-item btn"><a href="/courses" class="nav-link">Courses</a></li>
         <li class="nav-item btn"><a href="/mycourse" class="nav-link">Mycourse</a></li>
         {% if user.is_authenticated %}
-        <a class="site-header-item" href="#">
-          <span>{{ user.username }}</span>
-        </a>
-        <div class="site-header-item">
+    
+        <li class="nav-item btn d-flex justify-content-center py-3">
+          <span class="nav-item">{{ user.username }}</span></li>
+        
+
+        <div class="site-header">
           <form action="{% url 'logout' %}" method="post">
             {% csrf_token %}
-            <button type="submit">ออกจากระบบ</button>
-          </form>
+            <button class="nav-item btn btn-danger d-flex justify-content-center py-3">ออกจากระบบ</button>
+          </form> 
         </div>
-    {% else %}
-        {% comment %} <a class="site-header-item" href="{% url 'login' %}">
+        {% else %}
+        <!--<a class="site-header-item" href="{% url 'login' %}">
           <span>เข้าสู่ระบบ</span>
-        </a> {% endcomment %}
-    {% endif %}
+        </a>-->
+        {% endif %}
     
       </ul>
     </header>
