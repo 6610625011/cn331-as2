@@ -17,7 +17,14 @@ class Course(models.Model):
     subject_name = models.CharField(max_length=100)
     subject_semester = models.CharField(max_length=10)
     subject_amount = models.IntegerField()
-    # is_quota_open = models.BooleanField(default=True)
+    subject_amount_remaining = models.IntegerField()
+    quota_enabled = models.BooleanField(default=True)
+    
+    def save(self, *args, **kwargs):
+        # ตั้งค่า subject_amount_remaining ให้มีค่าเท่ากับ subject_amount ก่อนบันทึก
+        if self.pk is None:  # ถ้าเป็นการสร้างใหม่
+            self.subject_amount_remaining = self.subject_amount
+        super().save(*args, **kwargs)    
 
     def __str__(self):
         return self.subject_id

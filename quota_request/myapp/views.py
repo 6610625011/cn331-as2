@@ -36,7 +36,10 @@ def courses(request):
     all_courses = Course.objects.all()
     requested_courses = QuotaRequest.objects.filter(user=request.user).select_related('course')
     
-    available_courses = Course.objects.exclude(id__in=requested_courses)
+    # Extract the IDs of the requested courses
+    requested_course_ids = requested_courses.values_list('course_id', flat=True)
+
+    available_courses = Course.objects.exclude(id__in=requested_course_ids)  # Use the list of IDs here
     
     selected_semester = request.GET.get('semester', None)
 
@@ -47,20 +50,21 @@ def courses(request):
 
     return render(request, "courses.html", {
         "all_courses": all_courses,
-        "requested_courses": requested_courses,
+        "requested_course_ids": requested_course_ids,  # Pass the list of course IDs
         "available_courses": available_courses,
         "semesters": semesters,
         "selected_semester": selected_semester,
     })
+
     
 def request_quota(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     
     if not QuotaRequest.objects.filter(user=request.user, course=course).exists():
-        if course.subject_amount > 0:
+        if course.subject_amount_remaining > 0:  # เปลี่ยนเป็น subject_amount_remaining
             QuotaRequest.objects.create(user=request.user, course=course)
 
-            course.subject_amount -= 1
+            course.subject_amount_remaining -= 1  # ลดจำนวนที่นั่งที่เหลือ
             course.save()
 
             messages.success(request, 'ขอโควต้าสำเร็จ')
@@ -70,17 +74,19 @@ def request_quota(request, course_id):
         messages.error(request, 'คุณได้ขอโควต้าในวิชานี้แล้ว')
     return redirect('/courses')
 
+
 def cancel_quota_request(request, course_id):
     course = get_object_or_404(Course, id=course_id)    
     quota_request = get_object_or_404(QuotaRequest, user=request.user, course_id=course_id)
     
     quota_request.delete()
     
-    course.subject_amount += 1
+    course.subject_amount_remaining += 1  # เพิ่มจำนวนที่นั่งที่เหลือ
     course.save()    
     
     messages.success(request, "ยกเลิกการขอโควต้าแล้ว")
     return redirect('/mycourse')
+
 
 def mycourse(request):
     requested_courses = QuotaRequest.objects.filter(user=request.user)

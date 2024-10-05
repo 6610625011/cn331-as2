@@ -12,10 +12,7 @@
 {% endfor %}
 {% endif %}
 
-{% comment %} <p class="justify-content-center">Quota list</p> {% endcomment %}
-
-<h3>รายวิชาทั้งหมด</h3>
-
+<!-- {% comment %} <p class="justify-content-center">Quota list</p> {% endcomment %} -->
 <div class="dropdown mb-3"></div>
 <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
   aria-expanded="false">
@@ -36,6 +33,8 @@
 </ul>
 </div>
 
+<h3>รายวิชาทั้งหมด</h3>
+
 <table class="table">
   <thead>
     <tr>
@@ -44,6 +43,7 @@
       <th scope="col">ชื่อวิชา</th>
       <th scope="col">ภาคการศึกษา</th>
       <th scope="col">จำนวนรับ</th>
+      <th scope="col">จำนวนที่นั่งที่เหลือ</th>
       <th scope="col">ขอโควต้า</th>
     </tr>
   </thead>
@@ -55,14 +55,21 @@
       <td>{{course.subject_name}}</td>
       <td>{{course.subject_semester}}</td>
       <td>{{course.subject_amount}}</td>
+      <td>{{ course.subject_amount_remaining }}</td>
       <td>
-        {% if course.subject_id in requested_courses %}
-        <span style="color: grey;">ขอโควต้าแล้ว</span>
+        {% if course.quota_enabled %}
+        {% if course.subject_amount_remaining == 0 %}
+        <span class="text-danger">เต็ม</span>
+        {% elif course.id in requested_course_ids %} <!-- Change this line -->
+        <span class="text-muted">ขอโควต้าแล้ว</span>
         {% else %}
         <div class="text-end" style="margin-right: 20px;">
           <a href="{% url 'request_quota' course.id %}" class="btn btn-outline-dark"
             onclick="return confirm('คุณต้องการขอโควต้าวิชา {{ course.subject_id }} {{ course.subject_name }} หรือไม่?')">enroll</a>
         </div>
+        {% endif %}
+        {% else %}
+        <span class="text-danger">รายวิชานี้ไม่เปิดให้ขอโควต้า</span>
         {% endif %}
       </td>
     </tr>
