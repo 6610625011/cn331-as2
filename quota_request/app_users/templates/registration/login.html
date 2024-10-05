@@ -1,16 +1,16 @@
 {% extends "base.html" %}
 {% block title %}
-<title>Home</title>
+Log in
 {% endblock %}
 {% block content %}
-<section class="content-section content-section-single">
+<section class="form-signin w-100 m-auto d-flex justify-content-center py-3">
     <div class="content-container">
-        <h3 class="content-title">เข้าสู่ระบบ</h3>
+        <h3 class="content-title">Welcome</h3>
         <form action="{% url 'login' %}" method="post">
             {% csrf_token %}
             {{ form.as_p }}
-            <p>
-                <button class='button button-primary' type='submit'>เข้าสู่ระบบ</button>
+            <p style="font-family: EkkamaiNew;">
+                <button class='btn btn-primary' type='submit'>เข้าสู่ระบบ</button>
             </p>
         </form>
     </div>
