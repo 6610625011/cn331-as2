@@ -20,7 +20,9 @@
 {% endfor %}
 {% endif %}
 
-<div class="dropdown mb-3">
+<h3 style="text-align: center;">รายวิชาทั้งหมด</h3>
+
+<div class="dropdown mb-3" style="width: 90%; margin-left: 5%;">
   <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
     aria-expanded="false">
     {% if request.GET.semester %}
@@ -48,15 +50,10 @@
   }
 </script>
 
-
-
-
-<h3>รายวิชาทั้งหมด</h3>
-
 <div class="accordion" id="courseAccordion">
-  <table class="table">
+  <table class="table " style="width: 90% ;margin-left: auto; margin-right: auto; text-align: center;">
     <thead>
-      <tr>
+      <tr style="text-align: center; vertical-align: middle;">
         <th scope="col">NO.</th>
         <th scope="col">รหัสวิชา</th>
         <th scope="col">ชื่อวิชา</th>
@@ -68,7 +65,8 @@
     </thead>
     <tbody>
       {% for course in all_courses %}
-      <tr data-bs-toggle="collapse" data-bs-target="#collapseCourse{{ course.id }}" aria-expanded="false"
+      <tr style="text-align: center; vertical-align: middle;" data-bs-toggle="collapse"
+        data-bs-target="#collapseCourse{{ course.id }}" aria-expanded="false"
         aria-controls="collapseCourse{{ course.id }}">
         <th scope="row">{{ forloop.counter }}</th>
         <td>{{ course.subject_id }}</td>
@@ -76,14 +74,14 @@
         <td>{{ course.subject_semester }}</td>
         <td>{{ course.subject_amount }}</td>
         <td>{{ course.subject_amount_remaining }}</td>
-        <td>
+        <td style="text-align: center; vertical-align: middle;">
           {% if course.quota_enabled %}
           {% if course.subject_amount_remaining == 0 %}
           <span class="text-danger">เต็ม</span>
           {% elif course.id in requested_course_ids %}
           <span class="text-muted">ขอโควต้าแล้ว</span>
           {% else %}
-          <div class="text-end" style="margin-right: 20px;">
+          <div style="text-align: center;">
             <a href="#" class="btn btn-outline-dark"
               onclick="return handleEnrollClick(this, '{{ course.subject_id }}', '{{ course.subject_name }}', '{{ course.id }}')">Enroll</a>
           </div>

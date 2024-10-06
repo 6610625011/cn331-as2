@@ -22,11 +22,10 @@
         <li class="nav-item btn"><a href="/courses" class="nav-link">Courses</a></li>
         <li class="nav-item btn"><a href="/mycourse" class="nav-link">Mycourse</a></li>
         {% if user.is_authenticated %}
-    
+  
         <li class="nav-item btn d-flex justify-content-center py-3">
           <span class="nav-item">{{ user.username }}</span></li>
         
-
         <div class="site-header">
           <form action="{% url 'logout' %}" method="post">
             {% csrf_token %}

@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib import messages
-from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from .models import Course,QuotaRequest
@@ -90,4 +89,4 @@ def mycourse(request):
 
 
 def logout(request):
-    return redirect("/")
+    return redirect("login")
