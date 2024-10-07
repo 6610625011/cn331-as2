@@ -58,7 +58,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'quota_request' / 'myapp' / 'Templates'],
+        'DIRS': ['/home/6610685171/cn331-as2/quota_request/myapp/Templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
