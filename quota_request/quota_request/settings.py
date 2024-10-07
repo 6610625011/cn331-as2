@@ -56,7 +56,7 @@ ROOT_URLCONF = 'quota_request.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+        'DIRS': [os.path.join(BASE_DIR, 'quota_request', 'myapp', 'Templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
