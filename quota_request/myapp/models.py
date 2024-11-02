@@ -13,8 +13,13 @@ class Course(models.Model):
     quota_enabled = models.BooleanField(default=True)
 
     def save(self, *args, **kwargs):
-        if self.pk is None:
+        if self.pk is not None:
+            original = Course.objects.get(pk=self.pk)
+            if original.subject_amount != self.subject_amount:
+                self.subject_amount_remaining = self.subject_amount
+        else:
             self.subject_amount_remaining = self.subject_amount
+
         super().save(*args, **kwargs)
 
     def __str__(self):

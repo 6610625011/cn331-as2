@@ -60,10 +60,10 @@ def request_quota(request, course_id):
             course.save()
 
             messages.success(request, 'ขอโควต้าสำเร็จ')
-        else:
-            messages.error(request, 'ขอโควต้าไม่สำเร็จ: วิชานี้เต็มแล้ว')
-    else:
-        messages.error(request, 'คุณได้ขอโควต้าในวิชานี้แล้ว')
+        # else:
+        #     messages.error(request, 'ขอโควต้าไม่สำเร็จ: วิชานี้เต็มแล้ว')
+    # else:
+    #     messages.error(request, 'คุณได้ขอโควต้าในวิชานี้แล้ว')
     return redirect('/courses')
 
 
